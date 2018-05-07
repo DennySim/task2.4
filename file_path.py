@@ -1,17 +1,23 @@
-def file_list_in_dir():
-    import os
+import os
 
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    new_pwd = os.chdir(current_dir)
-    file_list = os.listdir()
+
+def file_list_in_dir():
+
+    file_dir = os.path.dirname(__file__)
+    file_list_without_dir = os.listdir(file_dir)
+    file_list = []
+    for file in file_list_without_dir:
+        file_list.append(os.path.join(file_dir, file))
     return file_list
 
 
-temp_file_list = []
-for i in file_list_in_dir():
-    if '.sql' in i:
-        temp_file_list.append(i)
-file_list = temp_file_list
+def sql_file_list():
+    temp_file_list = []
+    for i in file_list_in_dir():
+        if i.endswith('.sql'):
+            temp_file_list.append(i)
+    file_list = temp_file_list
+    return file_list
 
 
 def seek_in_file(file_list):
@@ -20,15 +26,23 @@ def seek_in_file(file_list):
     seek_input = input()
     new_file_list = []
     for i in file_list:
-        with open(i, encoding = 'utf-8') as sql:
+        with open(i, encoding='utf-8') as sql:
             text = sql.read()
-
             if seek_input in text:
                 new_file_list.append(i)
 
-    print('Всего найдено файлов', len(new_file_list) )
+    print_searched_files(new_file_list)
     file_list = new_file_list
 
     return seek_in_file(file_list)
 
+
+def print_searched_files(new_file_list):
+    for n, file in enumerate(new_file_list):
+        print(n+1, file)
+    print('Всего найдено файлов', len(new_file_list))
+
+
+file_list = sql_file_list()
 seek_in_file(file_list)
+
